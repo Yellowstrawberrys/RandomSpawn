@@ -1,0 +1,20 @@
+# Setting file
+# ! ! DO NOT TOUCH *.db FILE ! !
+
+#Coordinate Settings
+coordinates:
+  type: default # Default: default(center = 0,0 | max = 29999984, 29999984 | canSpawnInWater = false) / Other choice: custom(Can change values at down below)
+  # Custom
+  #centerX: 0 # Needs to be Integer
+  #centerZ: 0 # Needs to be Integer
+  #maxX: 29999984 # Needs to be Integer
+  #maxZ: 29999984 # Needs to be Integer
+  #canSpawnInWater: false # Needs to be boolean(true or false)
+
+# SQL Settings
+sql:
+  type: sqlite # Default: sqlite (SQLite .db) / Other choice: mariadb (requires MariaDB server)
+  #databaseName: server # Name of Database (This does not matter when you're using SQLite)
+  #url: "localhost:3306"
+  #user: "root"
+  #password: "root"

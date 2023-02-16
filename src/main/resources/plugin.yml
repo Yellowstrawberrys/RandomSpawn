@@ -1,0 +1,6 @@
+name: RandomSpawn
+version: '${version}'
+main: me.yellowstrawberry.rs.RandomSpawn
+api-version: 1.19
+authors: [ Yellowstrawberrys ]
+description: RandomSpawn
