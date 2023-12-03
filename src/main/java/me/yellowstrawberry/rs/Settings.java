@@ -52,7 +52,7 @@ public class Settings {
                 if(coordinateS.containsKey("centerZ")) centerZ = (Integer) coordinateS.get("centerZ");
                 if(coordinateS.containsKey("maxX")) maxX = (Integer) coordinateS.get("maxX");
                 if(coordinateS.containsKey("maxZ")) maxZ = (Integer) coordinateS.get("maxZ");
-                if(coordinateS.containsKey("canSpawnInWater")) canSpawnInWater = ((String) coordinateS.get("canSpawnInWater")).equalsIgnoreCase("true");
+                if(coordinateS.containsKey("canSpawnInWater")) canSpawnInWater = Boolean.parseBoolean(coordinateS.get("canSpawnInWater").toString());
             }
 
             if(sqlS.get("type").toString().equals("sqlite")) {
