@@ -69,7 +69,7 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
     public Location getRandomCoordinates() {
         Random r = new Random();
         int x = settings.centerX+(r.nextInt(settings.maxX*2)-settings.maxX), z = settings.centerZ+(r.nextInt(settings.maxZ*2)-settings.maxZ);
-        int y = Bukkit.getWorld("world").getHighestBlockYAt(x, z);
+        int y = Bukkit.getWorld("world").getHighestBlockYAt(x, z)+1;
         Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
         Bukkit.getWorld("world").loadChunk(loc.getChunk());
         if(loc.getBlock().getType() == Material.WATER || loc.getBlock().getType() == Material.LAVA) loc = getRandomCoordinates();
@@ -86,7 +86,7 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
 
     public void addSpawnpoint(String uuid, int x, int y, int z){
         try {
-            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), x, y, z));
+            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), x, y+0.1, z));
             conn.prepareStatement("INSERT INTO `spawnpoint` (uuid, x, y, z) VALUES ('"+uuid+"', "+x+", "+y+", "+z+")").execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -98,7 +98,7 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
         try{
             ResultSet set = conn.prepareStatement("SELECT * FROM `spawnpoint` WHERE uuid='"+uuid+"'").executeQuery();
             set.first();
-            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), set.getInt("x"), set.getInt("y"), set.getInt("z")));
+            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), set.getInt("x"), set.getInt("y")+0.1, set.getInt("z")));
             return spawnpoints.get(uuid);
         }catch (SQLException e){
             throw new RuntimeException(e);
