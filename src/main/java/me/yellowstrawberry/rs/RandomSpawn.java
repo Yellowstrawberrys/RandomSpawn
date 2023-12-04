@@ -80,7 +80,9 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         if(event.getPlayer().getBedSpawnLocation() == null) {
             event.getPlayer().setBedSpawnLocation(getSpawnpoint(event.getPlayer().getUniqueId().toString()));
-            event.setRespawnLocation(getSpawnpoint(event.getPlayer().getUniqueId().toString()));
+            Location loc = getSpawnpoint(event.getPlayer().getUniqueId().toString());
+            if(!loc.isChunkLoaded()) Bukkit.getWorld("world").loadChunk(loc.getChunk());
+            event.setRespawnLocation(loc);
         }
     }
 
