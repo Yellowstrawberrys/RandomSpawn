@@ -29,7 +29,7 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
             if(settings.sqliteFile == null) {
                 Class.forName("org.mariadb.jdbc.Driver");
                 conn = DriverManager.getConnection(
-                        "jdbc:mariadb://" + settings.sqlURL + "/" + settings.databaseName + "?useUnicode=true&passwordCharacterEncoding=utf-8", "root", "root");
+                        "jdbc:mariadb://" + settings.sqlURL + "/" + settings.databaseName + "?useUnicode=true&passwordCharacterEncoding=utf-8", settings.sqlUser, settings.sqlPassword);
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS `spawnpoint` (\n" +
                         "\t`uuid` LONGTEXT NOT NULL COLLATE 'utf8mb4_general_ci',\n" +
                         "\t`x` INT(11) NOT NULL DEFAULT '0',\n" +
@@ -69,9 +69,9 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
     public Location getRandomCoordinates() {
         Random r = new Random();
         int x = settings.centerX+(r.nextInt(settings.maxX*2)-settings.maxX), z = settings.centerZ+(r.nextInt(settings.maxZ*2)-settings.maxZ);
-        int y = Bukkit.getWorld("world").getHighestBlockYAt(x, z)+1;
-        Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
-        Bukkit.getWorld("world").loadChunk(loc.getChunk());
+        int y = Bukkit.getWorlds().get(0).getHighestBlockYAt(x, z)+1;
+        Location loc = new Location(Bukkit.getWorlds().get(0), x, y, z);
+        Bukkit.getWorlds().get(0).loadChunk(loc.getChunk());
         if(loc.getBlock().getType() == Material.WATER || loc.getBlock().getType() == Material.LAVA) loc = getRandomCoordinates();
         return loc;
     }
@@ -81,14 +81,14 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
         if(event.getPlayer().getBedSpawnLocation() == null) {
             event.getPlayer().setBedSpawnLocation(getSpawnpoint(event.getPlayer().getUniqueId().toString()));
             Location loc = getSpawnpoint(event.getPlayer().getUniqueId().toString());
-            if(!loc.isChunkLoaded()) Bukkit.getWorld("world").loadChunk(loc.getChunk());
+            if(!loc.isChunkLoaded()) Bukkit.getWorlds().get(0).loadChunk(loc.getChunk());
             event.setRespawnLocation(loc);
         }
     }
 
     public void addSpawnpoint(String uuid, int x, int y, int z){
         try {
-            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), x, y+0.1, z));
+            spawnpoints.put(uuid, new Location(Bukkit.getWorlds().get(0), x, y+0.1, z));
             conn.prepareStatement("INSERT INTO `spawnpoint` (uuid, x, y, z) VALUES ('"+uuid+"', "+x+", "+y+", "+z+")").execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -100,7 +100,7 @@ public final class RandomSpawn extends JavaPlugin implements Listener {
         try{
             ResultSet set = conn.prepareStatement("SELECT * FROM `spawnpoint` WHERE uuid='"+uuid+"'").executeQuery();
             set.first();
-            spawnpoints.put(uuid, new Location(Bukkit.getWorld("world"), set.getInt("x"), set.getInt("y")+0.1, set.getInt("z")));
+            spawnpoints.put(uuid, new Location(Bukkit.getWorlds().get(0), set.getInt("x"), set.getInt("y")+0.1, set.getInt("z")));
             return spawnpoints.get(uuid);
         }catch (SQLException e){
             throw new RuntimeException(e);
